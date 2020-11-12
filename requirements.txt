@@ -5,3 +5,4 @@ spacy
 nx
 requests
 progressbar
+gunicorn
