@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/style2.css">
+    <title>Posts</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Ubuntu:wght@700&display=swap" rel="stylesheet">
+
+</head>
+<center>
+    <h1 style="font-family: 'Ubuntu', sans-serif; margin-bottom: 50px; color: #393b44;">Posts</h1>
+</center>
+
+<body>
+  {% for i in summaries%}
+    <center>
+    <div class="container">
+        <div>
+            <div class="box">
+                <img src={{i[1]}}>
+            </div>
+        </div>
+        <div>
+            <p style="font-family: 'Montserrat', sans-serif; margin-bottom: 0;">{{i[0]}}
+            </p>
+        </div>
+    </div>
+    </center>
+{%endfor%}
+</body>
+
+</html>
