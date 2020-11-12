@@ -5,4 +5,3 @@ spacy
 nx
 requests
 progressbar
-Python
