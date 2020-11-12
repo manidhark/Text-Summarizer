@@ -6,7 +6,7 @@ import numpy as np
 import networkx as nx
 import spacy
 
- 
+
 def read_article(file_name):
     article = file_name.split(". ")
     sentences = []
@@ -15,39 +15,39 @@ def read_article(file_name):
         print(sentence)
         sentences.append(sentence.replace("[^a-zA-Z]", " ").split(" "))
     sentences.pop()
-    
+
     return sentences
 
 def sentence_similarity(sent1, sent2, stopwords=None):
     if stopwords is None:
         stopwords = []
- 
+
     sent1 = [w.lower() for w in sent1]
     sent2 = [w.lower() for w in sent2]
- 
+
     all_words = list(set(sent1 + sent2))
- 
+
     vector1 = [0] * len(all_words)
     vector2 = [0] * len(all_words)
- 
-    
+
+
     for w in sent1:
         if w in stopwords:
             continue
         vector1[all_words.index(w)] += 1
- 
-    
+
+
     for w in sent2:
         if w in stopwords:
             continue
         vector2[all_words.index(w)] += 1
- 
+
     return 1 - cosine_distance(vector1, vector2)
- 
+
 def build_similarity_matrix(sentences, stop_words):
-    
+
     similarity_matrix = np.zeros((len(sentences), len(sentences)))
- 
+
     for idx1 in range(len(sentences)):
         for idx2 in range(len(sentences)):
             if idx1 == idx2:
@@ -79,7 +79,7 @@ def generate_keyword(summary):
   nlp = spacy.load("en_core_web_sm")
   doc = nlp(summary)
   return doc.ents[0].text
-  
+
 import os
 import time
 import urllib
@@ -304,6 +304,8 @@ def summary():
 @app.route('/posts', methods=['POST', 'GET'])
 def posts():
     return render_template('posts.html',summaries=summaries,images=images)
-  
-if __name__ == '__main__':
-    app.run(debug=True)
+
+# if __name__ == '__main__':
+#     app.run(debug=True)
+
+app.run()
