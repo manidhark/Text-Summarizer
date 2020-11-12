@@ -5,3 +5,6 @@ spacy
 nx
 requests
 progressbar
+wordnet
+pros_cons
+reuters
