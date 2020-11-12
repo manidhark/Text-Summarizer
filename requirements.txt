@@ -1,4 +1,4 @@
-Flask-1.1.1
+Flask
 nltk-3.2.5
 numpy-1.11.1
 spacy-2.2.4
