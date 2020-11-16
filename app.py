@@ -21,10 +21,9 @@ def generate_summary(input_text):
     return output
 
 import spacy
-import en_core_web_sm
 
 def generate_keyword(input_text):
-  nlp = en_core_web_sm.load()
+  nlp = spacy.load("en_core_web_sm")
   doc = nlp(input_text)
   return doc.ents[0].text
 
