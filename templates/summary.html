@@ -18,12 +18,16 @@
   <div class="container">
       <div>
           <div class="box">
-              <img src={{image}}>
+              <img src="{{image}}" width="300" height="300">
           </div>
       </div>
       <div>
           <p style="font-family: 'Montserrat', sans-serif; margin-bottom: 0;">{{summary}}
           </p>
+          <audio controls>
+          <source src="{{audio}}" type="audio/mpeg">
+          Your browser does not support the audio element.
+          </audio>
       </div>
   </div>
   </center>

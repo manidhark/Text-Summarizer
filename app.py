@@ -1,83 +1,29 @@
 
-import nltk
-from nltk.corpus import stopwords
-from nltk.cluster.util import cosine_distance
-import numpy as np
-import networkx as nx
-import spacy
+import torch
+import json
+from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
 
+model = T5ForConditionalGeneration.from_pretrained('t5-small')
+tokenizer = T5Tokenizer.from_pretrained('t5-small')
+device = torch.device('cpu')
 
-def read_article(file_name):
-    article = file_name.split(". ")
-    sentences = []
+def generate_summary(input_text):
+    t5_prepared_text = "summarize:" + input_text
+    tokenized_text = tokenizer.encode(t5_prepared_text, return_tensors="pt").to(device)
+    summary_gen = model.generate(tokenized_text,
+                                 num_beams=4,
+                                 no_repeat_ngram_size=2,
+                                 min_length=20,
+                                 max_length=100,
+                                 early_stopping=True)
 
-    for sentence in article:
-        print(sentence)
-        sentences.append(sentence.replace("[^a-zA-Z]", " ").split(" "))
-    sentences.pop()
-
-    return sentences
-
-def sentence_similarity(sent1, sent2, stopwords=None):
-    if stopwords is None:
-        stopwords = []
-
-    sent1 = [w.lower() for w in sent1]
-    sent2 = [w.lower() for w in sent2]
-
-    all_words = list(set(sent1 + sent2))
-
-    vector1 = [0] * len(all_words)
-    vector2 = [0] * len(all_words)
-
-
-    for w in sent1:
-        if w in stopwords:
-            continue
-        vector1[all_words.index(w)] += 1
-
-
-    for w in sent2:
-        if w in stopwords:
-            continue
-        vector2[all_words.index(w)] += 1
-
-    return 1 - cosine_distance(vector1, vector2)
-
-def build_similarity_matrix(sentences, stop_words):
-
-    similarity_matrix = np.zeros((len(sentences), len(sentences)))
-
-    for idx1 in range(len(sentences)):
-        for idx2 in range(len(sentences)):
-            if idx1 == idx2:
-                continue
-            similarity_matrix[idx1][idx2] = sentence_similarity(sentences[idx1], sentences[idx2], stop_words)
-
-    return similarity_matrix
-
-
-def generate_summary(file_name, top_n=5):
-    nltk.download("stopwords")
-    stop_words = stopwords.words('english')
-    summarize_text = []
-    sentences =  read_article(file_name)
-    sentence_similarity_martix = build_similarity_matrix(sentences, stop_words)
-    sentence_similarity_graph = nx.from_numpy_array(sentence_similarity_martix)
-    scores = nx.pagerank(sentence_similarity_graph)
-    ranked_sentence = sorted(((scores[i],s) for i,s in enumerate(sentences)), reverse=True)
-    #print("Indexes of top ranked_sentence order are ", ranked_sentence)
-    for i in range(top_n):
-      summarize_text.append(" ".join(ranked_sentence[i][1]))
-    summary=". ".join(summarize_text)
-    return summary
-
+    output = tokenizer.decode(summary_gen[0], skip_special_tokens=True)
+    return output
 
 import spacy
-def generate_keyword(summary):
-
+def generate_keyword(input_text):
   nlp = spacy.load("en_core_web_sm")
-  doc = nlp(summary)
+  doc = nlp(input_text)
   return doc.ents[0].text
 
 import os
@@ -255,15 +201,36 @@ class simple_image_download:
             print(e)
             exit(0)
 
+def convert_summary_to_audio(summary, filename):
+  from google.cloud import texttospeech
+  client = texttospeech.TextToSpeechClient()
+  synthesis_input = texttospeech.SynthesisInput(text=summary)
+  voice = texttospeech.VoiceSelectionParams(
+      language_code="en-US", ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL
+  )
+  audio_config = texttospeech.AudioConfig(
+      audio_encoding=texttospeech.AudioEncoding.MP3
+  )
+  response = client.synthesize_speech(
+      input=synthesis_input, voice=voice, audio_config=audio_config
+  )
+  with open("static/"+filename+".mp3", "wb") as out:
+      out.write(response.audio_content)
+
+
+
+from flask_ngrok import run_with_ngrok
 import json
 from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__)
+run_with_ngrok(app)   #starts ngrok when the app is run
 
-summaries=[['Democratic candidate Joe Biden Wednesday said he was optimistic of a win in the US presidential elections and thanked his supporters for their patience.  Both Trump and Biden have made expected gains in smaller states','../static/trump.jpeg'],
-           ['However, while the victory ensured the Hyderabad team got a spot in the playoffs, it also knocked Kolkata Knight Riders out of the tournament. However, with a victory needed to qualify, Sunrisers Hyderabad skipper David Warner and Wriddhiman Saha ensured the team chased down a total of 150 at a canter without losing a single wicket','../static/srh.jpeg'],
-           ['PayPal  this week laid out its vision for the future of its digital wallet platform and its PayPal and Venmo  apps.  What’s more, PayPal put timeline on the Honey integrations and the other updates it plans to roll out over the course of the next year','../static/paypal.jpeg'],
-           ['Scientists have developed a vaccine candidate for COVID-19 that produces "extremely high levels" of protective antibodies in animal models, an advance that may lead to a novel therapeutic to curb the pandemic.  According to the study, the molecular structure of the vaccine roughly mimics that of a virus, which may account for its enhanced ability to provoke an immune response','../static/covid.jpeg']]
+summaries=[['Democratic candidate Joe Biden Wednesday said he was optimistic of a win in the US presidential elections and thanked his supporters for their patience.  Both Trump and Biden have made expected gains in smaller states','../static/trump.jpeg','../static/trump.mp3'],
+           ['However, while the victory ensured the Hyderabad team got a spot in the playoffs, it also knocked Kolkata Knight Riders out of the tournament. However, with a victory needed to qualify, Sunrisers Hyderabad skipper David Warner and Wriddhiman Saha ensured the team chased down a total of 150 at a canter without losing a single wicket','../static/srh.jpeg','../static/srh.mp3'],
+           ['PayPal  this week laid out its vision for the future of its digital wallet platform and its PayPal and Venmo  apps.  What’s more, PayPal put timeline on the Honey integrations and the other updates it plans to roll out over the course of the next year','../static/paypal.jpeg','../static/paypal.mp3'],
+           ['Scientists have developed a vaccine candidate for COVID-19 that produces "extremely high levels" of protective antibodies in animal models, an advance that may lead to a novel therapeutic to curb the pandemic.  According to the study, the molecular structure of the vaccine roughly mimics that of a virus, which may account for its enhanced ability to provoke an immune response','../static/covid.jpeg','../static/covid.mp3']]
 images=['../static/trump.jpeg','../static/srh.jpeg','../static/paypal.jpeg','../static/covid.jpeg']
+audios=['../static/trump.mp3','../static/srh.mp3','../static/paypal.mp3','../static/covid.mp3']
 
 @app.route('/', methods=['POST', 'GET'])
 def login():
@@ -279,15 +246,17 @@ def login():
 @app.route('/home', methods=['POST', 'GET'])
 def index():
     if request.method == 'POST':
-        # summary = json.dumps({"summary" : generate_summary(request.form['summary'], 2)})
-        summary = generate_summary(request.form['summary'], 2)
-        keyword=generate_keyword(summary)
+        summary = generate_summary(request.form['summary'])
+        keyword=generate_keyword(request.form['summary'])
         print(summary)
         print(keyword)
         generate_image = simple_image_download
         generate_image().download(keyword, 1,extensions={'.png'})
-        image="../static/"+keyword+"/"+keyword+"_1.png"
-        return redirect(url_for('summary', summary=summary, image=image))
+        keyword = keyword.replace(" ", "_")
+        image="../static/"+keyword.replace(" ", "_")+"/"+keyword+"_1.png"
+        convert_summary_to_audio(summary,keyword.replace(" ", "_"))
+        filename="../static/"+keyword.replace(" ", "_")+".mp3"
+        return redirect(url_for('summary', summary=summary, image=image, audio=filename))
     return render_template('index.html')
 
 
@@ -297,15 +266,20 @@ def summary():
         return redirect('posts')
     summary=request.args['summary']
     image=request.args['image']
-    summaries.append([summary,image])
-    return render_template('summary.html', summary=summary, image=image)
+    audio=request.args['audio']
+    summaries.insert(0,[summary,image,audio])
+    images.insert(0,image)
+    audios.insert(0,audio)
+    return render_template('summary.html', summary=summary, image=image, audio=audio)
 
 
 @app.route('/posts', methods=['POST', 'GET'])
 def posts():
     return render_template('posts.html',summaries=summaries,images=images)
 
+app.run()
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
 
 # app.run()
