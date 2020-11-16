@@ -17,7 +17,7 @@ def generate_summary(input_text):
                                  max_length=100,
                                  early_stopping=True)
 
-    output = tokenizer.decode(summary_gen[0], skip_special_tokens=True)
+    output = T5Tokenizer.from_pretrained('t5-small').decode(summary_gen[0], skip_special_tokens=True)
     return output
 
 import spacy
