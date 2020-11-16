@@ -11,4 +11,3 @@ libmagic
 Werkzeug==1.0.1
 gunicorn== 19.9.0
 python-magic
-json
