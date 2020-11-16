@@ -277,7 +277,7 @@ def summary():
 def posts():
     return render_template('posts.html',summaries=summaries,images=images)
 
-app.run()
+# app.run()
 
 if __name__ == '__main__':
     app.run()
