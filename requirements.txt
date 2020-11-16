@@ -8,7 +8,6 @@ transformers==3.5.1
 urllib3==1.25.11
 progressbar
 libmagic
-Werkzeug==1.0.1
 gunicorn== 19.9.0
 python-magic
 torchvision
