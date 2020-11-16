@@ -10,4 +10,4 @@ progressbar
 libmagic
 Werkzeug==1.0.1
 gunicorn== 19.9.0
-python3-magic
+python-magic
