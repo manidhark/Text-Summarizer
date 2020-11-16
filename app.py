@@ -24,7 +24,7 @@ import spacy
 import en_core_web_sm
 
 def generate_keyword(input_text):
-  nlp = en_core_web_sm.load("en_core_web_sm")
+  nlp = en_core_web_sm.load()
   doc = nlp(input_text)
   return doc.ents[0].text
 
