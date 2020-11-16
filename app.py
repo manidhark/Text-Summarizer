@@ -20,10 +20,10 @@ from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
 #     return output
 
 import spacy
-# def generate_keyword(input_text):
-#   nlp = spacy.load("en_core_web_sm")
-#   doc = nlp(input_text)
-#   return doc.ents[0].text
+def generate_keyword(input_text):
+  nlp = spacy.load("en_core_web_sm")
+  doc = nlp(input_text)
+  return doc.ents[0].text
 
 import os
 import time
