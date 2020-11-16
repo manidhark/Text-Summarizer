@@ -1,30 +1,30 @@
 
-# import torch
-# import json
-# from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
+import torch
+import json
+from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
 
-# model = T5ForConditionalGeneration.from_pretrained('t5-small')
-# tokenizer = T5Tokenizer.from_pretrained('t5-small')
-# device = torch.device('cpu')
+model = T5ForConditionalGeneration.from_pretrained('t5-small')
+tokenizer = T5Tokenizer.from_pretrained('t5-small')
+device = torch.device('cpu')
 
-# def generate_summary(input_text):
-#     t5_prepared_text = "summarize:" + input_text
-#     tokenized_text = tokenizer.encode(t5_prepared_text, return_tensors="pt").to(device)
-#     summary_gen = model.generate(tokenized_text,
-#                                  num_beams=4,
-#                                  no_repeat_ngram_size=2,
-#                                  min_length=20,
-#                                  max_length=100,
-#                                  early_stopping=True)
+def generate_summary(input_text):
+    t5_prepared_text = "summarize:" + input_text
+    tokenized_text = tokenizer.encode(t5_prepared_text, return_tensors="pt").to(device)
+    summary_gen = model.generate(tokenized_text,
+                                 num_beams=4,
+                                 no_repeat_ngram_size=2,
+                                 min_length=20,
+                                 max_length=100,
+                                 early_stopping=True)
 
-#     output = tokenizer.decode(summary_gen[0], skip_special_tokens=True)
-#     return output
+    output = tokenizer.decode(summary_gen[0], skip_special_tokens=True)
+    return output
 
-# import spacy
-# def generate_keyword(input_text):
-#   nlp = spacy.load("en_core_web_sm")
-#   doc = nlp(input_text)
-#   return doc.ents[0].text
+import spacy
+def generate_keyword(input_text):
+  nlp = spacy.load("en_core_web_sm")
+  doc = nlp(input_text)
+  return doc.ents[0].text
 
 # import os
 # import time
