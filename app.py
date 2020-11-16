@@ -244,31 +244,31 @@ def login():
 
 @app.route('/home', methods=['POST', 'GET'])
 def index():
-    # if request.method == 'POST':
-    #     summary = generate_summary(request.form['summary'])
-    #     keyword=generate_keyword(request.form['summary'])
-    #     print(summary)
-    #     print(keyword)
-    #     generate_image = simple_image_download
-    #     generate_image().download(keyword, 1,extensions={'.png'})
-    #     keyword = keyword.replace(" ", "_")
-    #     image="../static/"+keyword.replace(" ", "_")+"/"+keyword+"_1.png"
-    #     convert_summary_to_audio(summary,keyword.replace(" ", "_"))
-    #     filename="../static/"+keyword.replace(" ", "_")+".mp3"
-    #     return redirect(url_for('summary', summary=summary, image=image, audio=filename))s
+    if request.method == 'POST':
+        summary = generate_summary(request.form['summary'])
+        keyword=generate_keyword(request.form['summary'])
+        print(summary)
+        print(keyword)
+        generate_image = simple_image_download
+        generate_image().download(keyword, 1,extensions={'.png'})
+        keyword = keyword.replace(" ", "_")
+        image="../static/"+keyword.replace(" ", "_")+"/"+keyword+"_1.png"
+        convert_summary_to_audio(summary,keyword.replace(" ", "_"))
+        filename="../static/"+keyword.replace(" ", "_")+".mp3"
+        return redirect(url_for('summary', summary=summary, image=image, audio=filename))
     return render_template('index.html')
 
 
 @app.route('/summary', methods=['POST', 'GET'])
 def summary():
-    # if request.method == 'POST':
-    #     return redirect('posts')
-    # summary=request.args['summary']
-    # image=request.args['image']
-    # audio=request.args['audio']
-    # summaries.insert(0,[summary,image,audio])
-    # images.insert(0,image)
-    # audios.insert(0,audio)
+    if request.method == 'POST':
+        return redirect('posts')
+    summary=request.args['summary']
+    image=request.args['image']
+    audio=request.args['audio']
+    summaries.insert(0,[summary,image,audio])
+    images.insert(0,image)
+    audios.insert(0,audio)
     return render_template('summary.html', summary=summary, image=image, audio=audio)
 
 
