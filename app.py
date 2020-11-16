@@ -219,11 +219,11 @@ def convert_summary_to_audio(summary, filename):
 
 
 
-from flask_ngrok import run_with_ngrok
+# from flask_ngrok import run_with_ngrok
 import json
 from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__)
-run_with_ngrok(app)   #starts ngrok when the app is run
+# run_with_ngrok(app)   #starts ngrok when the app is run
 
 summaries=[['Democratic candidate Joe Biden Wednesday said he was optimistic of a win in the US presidential elections and thanked his supporters for their patience.  Both Trump and Biden have made expected gains in smaller states','../static/trump.jpeg','../static/trump.mp3'],
            ['However, while the victory ensured the Hyderabad team got a spot in the playoffs, it also knocked Kolkata Knight Riders out of the tournament. However, with a victory needed to qualify, Sunrisers Hyderabad skipper David Warner and Wriddhiman Saha ensured the team chased down a total of 150 at a canter without losing a single wicket','../static/srh.jpeg','../static/srh.mp3'],
