@@ -4,12 +4,12 @@ from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
 
 # model = T5ForConditionalGeneration.from_pretrained('t5-small')
 # tokenizer = T5Tokenizer.from_pretrained('t5-small')
-# device = torch.device('cpu')
+device = torch.device('cpu')
 
 # def generate_summary(input_text):
 #     t5_prepared_text = "summarize:" + input_text
-#     tokenized_text = tokenizer.encode(t5_prepared_text, return_tensors="pt").to(device)
-#     summary_gen = model.generate(tokenized_text,
+#     tokenized_text = T5Tokenizer.from_pretrained('t5-small').encode(t5_prepared_text, return_tensors="pt").to(device)
+#     summary_gen = T5ForConditionalGeneration.from_pretrained('t5-small').generate(tokenized_text,
 #                                  num_beams=4,
 #                                  no_repeat_ngram_size=2,
 #                                  min_length=20,
