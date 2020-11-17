@@ -203,6 +203,9 @@ class simple_image_download:
             print(e)
             exit(0)
 
+import os
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="static/key.json"
+
 def convert_summary_to_audio(summary, filename):
   from google.cloud import texttospeech
   client = texttospeech.TextToSpeechClient()

@@ -1,0 +1,7 @@
+{
+    "appService.showBuildDuringDeployPrompt": false,
+    "python.pythonPath": "/Users/manidharkodurupaka/Documents/GitHub/Text-Summarizer/.venv/bin/python3",
+    "git.ignoreLimitWarning": true,
+    "appService.defaultWebAppToDeploy": "/subscriptions/8d85e0be-d58d-45b9-80d7-5bf6280f26d6/resourceGroups/sreekar.anne1_rg_Linux_centralus/providers/Microsoft.Web/sites/text-summarizer-srikar",
+    "appService.deploySubpath": "."
+}
